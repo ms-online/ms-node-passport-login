@@ -1,12 +1,19 @@
 // 引入模块
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
+const mongoose = require('mongoose');
 
 const app = express();
 
 // 设置ejs
 app.use(expressLayouts);
 app.set("view engine", "ejs")
+
+// DB config
+const db = require('./config/keys').mongoURI;
+
+// 连接数据库
+mongoose.connect(db, {useNewUrlParser:true, useUnifiedTopology:true}).then(()=> console.log('MongoDB已经连接...')).catch(err => console.log(err));
 
 // router
 app.use('/', require('./routes/index'));
