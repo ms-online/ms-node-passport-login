@@ -15,6 +15,9 @@ const db = require('./config/keys').mongoURI;
 // 连接数据库
 mongoose.connect(db, {useNewUrlParser:true, useUnifiedTopology:true}).then(()=> console.log('MongoDB已经连接...')).catch(err => console.log(err));
 
+// body parser 对请求数据进行解析
+app.use(express.urlencoded({extended:false}));
+
 // router
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
