@@ -1,7 +1,12 @@
 // 引入模块
 const express = require('express');
+const expressLayouts = require('express-ejs-layouts');
 
 const app = express();
+
+// 设置ejs
+app.use(expressLayouts);
+app.set("view engine", "ejs")
 
 // router
 app.use('/', require('./routes/index'));
