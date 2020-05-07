@@ -73,6 +73,7 @@ router.post('/register', (req, res) => {
                         // 保存新用户到DB
                         newUser.save().then(user => {
                             // 用户注册成功后重定向到login
+                            req.flash('success_msg',"您已经完成注册，可以进行登录！")
                             res.redirect('/users/login');
                         }).catch(err => console.log(err));
                     })
