@@ -18,9 +18,7 @@ const db = require('./config/keys').mongoURI;
 // passport config
 require('./config/passport')(passport);
 
-// passport 中间件
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 // 连接数据库
 mongoose.connect(db, {useNewUrlParser:true, useUnifiedTopology:true}).then(()=> console.log('MongoDB已经连接...')).catch(err => console.log(err));
@@ -34,6 +32,9 @@ app.use(session({
     resave:true,
     saveUninitialized:true
 }))
+// passport 中间件
+app.use(passport.initialize());
+app.use(passport.session());
 
 // 设置connect flash
 app.use(flash());

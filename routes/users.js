@@ -2,11 +2,13 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 // 加载用户信息model
 const User = require('../models/user');
+const {forwardAuthenticated} = require('../config/auth');
 
-router.get('/login', (req,res) => res.render('login'));
-router.get('/register', (req,res) => res.render('register'));
+router.get('/login',forwardAuthenticated,(req,res) => res.render('login'));
+router.get('/register', forwardAuthenticated,(req,res) => res.render('register'));
 
 // 注册页
 router.post('/register', (req, res) => {
@@ -81,6 +83,22 @@ router.post('/register', (req, res) => {
             }
         })
     }
+})
+
+// login
+router.post('/login', (req,res,next) => {
+    passport.authenticate('local',{
+        successRedirect:'/dashboard',
+        failureRedirect:'/users/login',
+        failureFlash:true
+    })(req, res, next)
+})
+
+// login out
+router.get('/logout', (req,res)=> {
+    req.logOut();
+    req.flash('success_msg', '您已成功退出');
+    res.redirect('/users/login');
 })
 
 module.exports = router;

@@ -9,10 +9,10 @@ module.exports = function(passport){
     passport.use(
         new LocalStrategy({
             usernameField:'email'
-        }, (eamil, password, done)=>{
+        }, (email, password, done)=>{
             // 匹配用户
             User.findOne({
-                eamil:email
+                email:email
             }).then(user => {
                 if(!user){
                     return done(null, false, {message:"该邮箱未注册，用户不存在"});
