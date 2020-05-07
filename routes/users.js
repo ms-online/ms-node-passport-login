@@ -1,6 +1,9 @@
 // 引入模块
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+// 加载用户信息model
+const User = require('../models/user');
 
 router.get('/login', (req,res) => res.render('login'));
 router.get('/register', (req,res) => res.render('register'));
@@ -39,7 +42,43 @@ router.post('/register', (req, res) => {
             password2
         })
     }else{
-        res.send('注册成功！')
+        // 验证邮箱是否存在
+        User.findOne({email:email}).then(user => {
+            if(user){
+                // 用户和邮箱已经存在
+                errors.push({msg:"邮箱已经存在"});
+                res.render('register', {
+                    errors,
+                    name,
+                    email,
+                    password,
+                    password2
+                });
+            }else{
+                // 创建新用户
+                const newUser = new User({
+                    name,
+                    email,
+                    password
+                });
+                // console.log(newUser);
+                // res.send('hello')
+
+                // 加密密码
+                bcrypt.genSalt(10, (err,salt) => {
+                    bcrypt.hash(newUser.password, salt, (err, hash) => {
+                        if(err) throw err;
+                        // 设置密码为hash
+                        newUser.password = hash;
+                        // 保存新用户到DB
+                        newUser.save().then(user => {
+                            // 用户注册成功后重定向到login
+                            res.redirect('/users/login');
+                        }).catch(err => console.log(err));
+                    })
+                })
+            }
+        })
     }
 })
 
